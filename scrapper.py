@@ -12,6 +12,7 @@ day_f = today.day
 headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
         }
+        
 if __name__ == '__main__':
     url = f"https://www.wunderground.com/dashboard/pws/ITURCI5/table/{year_i}-{month_i}-{day_i}/{year_f}-{month_f}-{day_f}/daily"
     print(url)
