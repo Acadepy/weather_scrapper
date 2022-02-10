@@ -15,26 +15,31 @@ headers = {
         
 if __name__ == '__main__':
     url = f"https://www.wunderground.com/dashboard/pws/ITURCI5/table/{year_i}-{month_i}-{day_i}/{year_f}-{month_f}-{day_f}/daily"
-    print(url)
+    print(f"Obteniendo datos desde el {day_i}/{month_i}/{year_i} al {day_f}/{month_f}/{year_f}")
+
     request = requests.get(url, headers=headers)
     soup = BeautifulSoup(request.text, 'lxml')
     
     #Find the table
     table = soup.find("table", class_="history-table desktop-table")
-    #Find all columns from the table and convert them to text
-    tr_table = table.find("tr")
-    ths_table = tr_table.find_all("th")
-    ths_table_text = [i.text for i in ths_table]
+
+    #Find all columns titles from the table and convert them to text
+    titles_row = table.find("tr")
+    titles_list = titles_row.find_all("th")
+    titles = [i.text for i in titles_list]
     
     #Find all rows from the table and convert them to text
-    tbody = table.find("tbody")
-    trs_body = tbody.find_all("tr")
-    rows = []
-    for tr_body in trs_body:
-        columns = tr_body.find_all("td")
-        columns_text = [col.text for col in columns]
-        rows.append(columns_text)
-    print(rows)
+    table_body = table.find("tbody")
+    table_rows = table_body.find_all("tr")
+    data_rows = []
+    for row in table_rows:
+        columns_list = row.find_all("td")
+        columns_text = [col.text for col in columns_list]
+        data_rows.append(columns_text)
+        print(data_rows)
+        
 
-    #Con esto ya tengo listo, las cabeceras en ths_table_text y los datos en una lista de listas, en rows
-    
+    for row in data_rows:
+        hour = datetime.datetime.strptime(row[0], "%I:%M %p") 
+        #Faltaría seleccionar el día. Ahora mismo está leyendo una hora pero el día es el 01/01/1900
+        print(hour)   
