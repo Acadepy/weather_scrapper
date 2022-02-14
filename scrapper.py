@@ -6,12 +6,18 @@ today = datetime.datetime.now()
 YEAR = today.year
 MONTH = today.strftime("%m")
 DAY = today.day
-headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
-        }
-        
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'}
+
+#ILLAMA3
+#ITURCI5
+
+STATION = "ITURCI5"
+
+# units:
+# N/A  °F  °F  %  N/A  mph  mph  in  in  in  N/A  w/m²
+
 if __name__ == '__main__':
-    url = f"https://www.wunderground.com/dashboard/pws/ITURCI5/table/{YEAR}-{MONTH}-{DAY}/{YEAR}-{MONTH}-{DAY}/daily"
+    url = f"https://www.wunderground.com/dashboard/pws/{STATION}/table/{YEAR}-{MONTH}-{DAY}/{YEAR}-{MONTH}-{DAY}/daily"
     print(f"Obteniendo datos del {DAY}/{MONTH}/{YEAR}")
 
     request = requests.get(url, headers=headers)
