@@ -66,8 +66,7 @@ def write_data_in_file(data, filename='weather_data.txt'):
             writer.write('\t'.join(r))
             writer.write('\n')
 
-            
-if __name__ == '__main__':
+def main():
     print('\n\n\n' + "Rastreador de datos en WunderMaps".center(50, '*') + '\n\n\n')
     day_to_scrape = datetime.datetime.strptime(input('Introduce el día para obtener los datos (dd/mm/aaaa): '), "%d/%m/%Y")
     try:
@@ -85,7 +84,10 @@ if __name__ == '__main__':
     try:
         print("Se han escrito los datos.")
     except:
-        print("Ha habido un error al escribir los datos.")
+        print("Ha habido un error al escribir los datos.")    
+            
+if __name__ == '__main__':
+    main()
 
 
 
