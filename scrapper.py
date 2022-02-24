@@ -123,7 +123,7 @@ def menu():
         day_to_scrape = day_to_scrape_i if day_to_scrape_i < day_to_scrape_f else day_to_scrape_f
 
         #Obtengo los datos para cada uno de los días indicados, dejando 5 s para que no me tumben la entrada a la web.
-        for i in range(delta_int):
+        for i in range(delta_int + 1):
             obtener_un_dia(station_to_scrape, day_to_scrape)
             print(f'Obtenidos datos de {day_to_scrape}')
             day_to_scrape = day_to_scrape + datetime.timedelta(days=1)
