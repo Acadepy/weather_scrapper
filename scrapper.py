@@ -20,12 +20,16 @@ STATION = "ITURCI5"
 
 
 def data_scraped(station=STATION, day=DAY, month=MONTH, year=YEAR):
+    '''Devuelve todos los datos de un día concreto para una estación dada.'''
+
     url = f"https://www.wunderground.com/dashboard/pws/{station}/table/{year}-{month}-{day}/{year}-{month}-{day}/daily"
-    print(f"Obteniendo datos del {day}/{month}/{year}")
-    print(f"https://www.wunderground.com/dashboard/pws/{station}/table/{year}-{month}-{day}/{year}-{month}-{day}/daily")
+    print(f"Estación: {STATION}.")
+    print(f"Obteniendo datos del {day}/{month}/{year}.")
 
     request = requests.get(url, headers=headers)
     soup = BeautifulSoup(request.text, 'lxml')
+
+    print(f"Datos descargados.")
     
     #Find the table
     table = soup.find("table", class_="history-table desktop-table")
@@ -33,7 +37,7 @@ def data_scraped(station=STATION, day=DAY, month=MONTH, year=YEAR):
     #Find all columns titles from the table and convert them to text
     titles_row = table.find("tr")
     titles_list = titles_row.find_all("th")
-    titles = [i.text for i in titles_list]
+    #titles = [i.text for i in titles_list]
     
     #Find all rows from the table and convert them to text
     table_body = table.find("tbody")
@@ -61,30 +65,42 @@ def data_scraped(station=STATION, day=DAY, month=MONTH, year=YEAR):
     return all_day_data
 
 def write_data_in_file(data, filename='weather_data.txt'):
+    '''Escribe los datos que recibe en un archivo, separando las columnas con tabuladores.'''
+    print(f'Escribiendo datos en {filename}...')
     with open(filename, 'a') as writer:
         for r in data:
             writer.write('\t'.join(r))
             writer.write('\n')
 
-def main():
+def menu():
+    '''Menú que te pide un día y una estación, obtiene sus datos y los guarda en un archivo.'''
+
     print('\n\n\n' + "Rastreador de datos en WunderMaps".center(50, '*') + '\n\n\n')
-    day_to_scrape = datetime.datetime.strptime(input('Introduce el día para obtener los datos (dd/mm/aaaa): '), "%d/%m/%Y")
+    station_to_scrape = input('Introduce el nombre de la estación: ')
+    station_to_scrape = station_to_scrape if station_to_scrape else STATION
+
     try:
-        pass
+        day_to_scrape = datetime.datetime.strptime(input('Introduce el día para obtener los datos (dd/mm/aaaa): '), "%d/%m/%Y")
     except:
         print("Ha habido un error con la fecha. No tiene el formato correcto.")
+        return
     
-    data = data_scraped(day=day_to_scrape.day, month=day_to_scrape.month, year=day_to_scrape.year)
     try:
-        print("Se han obtenido los datos.")
+        data = data_scraped(station=station_to_scrape, day=day_to_scrape.day, month=day_to_scrape.month, year=day_to_scrape.year)
+        print("Se han obtenido correctamente los datos.")
     except:
         print("Ha habido un error al obtener los datos.")
+        return
     
-    write_data_in_file(data=data)
     try:
-        print("Se han escrito los datos.")
+        write_data_in_file(data=data)
+        print("Se han escrito los datos correctamente.")
     except:
-        print("Ha habido un error al escribir los datos.")    
+        print("Ha habido un error al escribir los datos.")   
+        return
+
+def main():
+    pass
             
 if __name__ == '__main__':
     main()
