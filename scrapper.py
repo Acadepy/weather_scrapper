@@ -6,7 +6,6 @@ today = datetime.datetime.now()
 YEAR = today.year
 MONTH = today.strftime("%m")
 DAY = today.day
-#DAY = (today - datetime.timedelta(days = 1)).day
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'}
 
 #ILLAMA3
@@ -74,23 +73,37 @@ def write_data_in_file(data, filename='weather_data.txt'):
             writer.write('\n')
 
 def menu():
-    '''Menú que te pide un día y una estación, obtiene sus datos y los guarda en un archivo.'''
+    '''Menú que te pide una estación y un día o rango de días, obtiene sus datos y los guarda en un archivo.'''
 
     print('\n\n\n' + "Rastreador de datos en WunderMaps".center(50, '*') + '\n\n\n')
+
+    #Se pide la estación objetivo. Si no hay, coge la mía por defecto.
+    #Se podría mejorar poniendo una serie de estaciones válidas, ahora permite cualquier cosa.
+    #Si no existe la estación, saltará la excepción que se lanza dentro de data_scraped 
     station_to_scrape = input('Introduce el nombre de la estación: ')
     station_to_scrape = station_to_scrape if station_to_scrape else STATION
 
     option = input(f'Para datos de un dia pulsa 1, para datos de varios dias pulsa 2.')
 
     if option == '1':
+        #Se pide la fecha para obtener los datos. Si el formato es incorrecto, sale del programa. Se debería mejorar
+        #con un bucle que volviera a pedir introducir la fecha.
         try:
             day_to_scrape = datetime.datetime.strptime(input('Introduce el día para obtener los datos (dd/mm/aaaa): '), "%d/%m/%Y")
         except:
             print("Ha habido un error con la fecha. No tiene el formato correcto.")
             return
+
+        #Compruebo que la fecha es válida, no puede ser superior a hoy.
+        if day_to_scrape > today:
+            print("La fecha es superior a hoy")
+            return
+
         obtener_un_dia(station_to_scrape, day_to_scrape)
         
     elif option == '2':
+        #Se pide la fecha para obtener los datos. Si el formato es incorrecto, sale del programa. Se debería mejorar
+        #con un bucle que volviera a pedir introducir la fecha.
         try:
             day_to_scrape_i = datetime.datetime.strptime(input('Datos desde (dd/mm/aaaa): '), "%d/%m/%Y")
             day_to_scrape_f = datetime.datetime.strptime(input('Datos hasta (dd/mm/aaaa): '), "%d/%m/%Y")
@@ -98,15 +111,18 @@ def menu():
             print("Ha habido un error con la fecha. No tiene el formato correcto.")
             return
             
+        #Compruebo que la fecha es válida, no puede ser superior a hoy.
         if day_to_scrape_f > today or day_to_scrape_i > today:
             print("Alguna fecha es superior a hoy")
             return
         
-        
+        #Calculo con un delta los días que hay entre las fechas indicadas y en caso de que las hayan introducido al reves
+        #cambio el signo del delta para poder luego utilizarlo en el for.
         delta = day_to_scrape_f - day_to_scrape_i
         delta_int = delta.days * (-1) if delta.days < 0 else delta.days
         day_to_scrape = day_to_scrape_i if day_to_scrape_i < day_to_scrape_f else day_to_scrape_f
 
+        #Obtengo los datos para cada uno de los días indicados, dejando 5 s para que no me tumben la entrada a la web.
         for i in range(delta_int):
             obtener_un_dia(station_to_scrape, day_to_scrape)
             print(f'Obtenidos datos de {day_to_scrape}')
@@ -119,8 +135,6 @@ def menu():
         print('Ninguna opción válida.')
         return
 
-
-    return station_to_scrape, day_to_scrape
     
 def obtener_un_dia(station_to_ob, day_to_ob):
 
