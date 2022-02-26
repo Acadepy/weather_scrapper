@@ -147,7 +147,7 @@ def obtener_un_dia(station_to_ob, day_to_ob):
         return
     
     try:
-        write_data_in_file(data=data)
+        write_data_in_file(data=data, filename=f'{day_to_ob.year}-{day_to_ob.month}-{day_to_ob.day}__{station_to_ob}.txt')
         print("Se han escrito los datos correctamente.")
     except:
         print("Ha habido un error al escribir los datos.")   
